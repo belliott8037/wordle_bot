@@ -1,0 +1,25 @@
+{
+  "name": "wordle_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/belliott8037/wordle_bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/belliott8037/wordle_bot/issues"
+  },
+  "homepage": "https://github.com/belliott8037/wordle_bot#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "update-dotenv": "^1.1.1"
+  }
+}
