@@ -4,8 +4,22 @@
 import DiscordJS, { Base, Channel, Intents, Options, TextChannel, ThreadChannel } from 'discord.js'
 import dotenv from 'dotenv'
 import fs from 'fs';
-function main(){
+
+function login(){
     dotenv.config()
+    const client = 
+    new DiscordJS.Client({
+        intents:[
+            Intents.FLAGS.GUILDS,
+            Intents.FLAGS.GUILD_MESSAGES
+            // Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+        ]
+    })
+    client.login(process.env.TOKEN)
+    return client
+}
+function main(client: DiscordJS.Client){
+    
     // This is stupid don't judge me
     // Set the arbitrary day is the day that you are starting the bot on
     let arbitrary_day = 250
@@ -23,7 +37,6 @@ function main(){
     }
     // Let's grab the word of the day
     let todays_word = words[0].substring(1,6)
-
     // Let's do some stupid math
     if (words.length < arbitrary_day){
         var modifier = words.length + arbitrary_diff
@@ -44,29 +57,34 @@ function main(){
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.toLocaleString('en-us', {month: 'long'})).padStart(2, '0'); // Jan is apparently zero real smart.
     var yyyy = today.getFullYear()
-    const client = new DiscordJS.Client({
-        intents:[
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MESSAGES
-            // Intents.FLAGS.GUILD_MESSAGE_REACTIONS
-        ]
-    })
-    client.on('ready', () => {
+
+    // client.on('ready', () => {
         //                                                             ID token of the thread
-        const archive_thread: ThreadChannel = client.channels.cache.get("946857057322164264") as ThreadChannel;
-        console.log("The bot is ready")   
-        if(!archive_thread.isThread()){
-            console.log("Channel is not a thread")
-            return
-        }
-        // post WoD
-        else if (typeof todays_word === "string"){
-            // dude typescript is so stupid you have to use tic marks ` to display variables in the strings
-            archive_thread.send(`${mm} ${dd} ${yyyy}\nWordle #${todays_number}\n||${todays_word}||`)
-        }
-        else
-            console.log("Error bad word, or something horrible")
-    })
+    const archive_thread: ThreadChannel = client.channels.cache.get("947220226561437706") as ThreadChannel;
+    // console.log("The bot is ready")   
+    if(!archive_thread.isThread()){
+        console.log("Channel is not a thread")
+        return
+    }
+    // post WoD
+    else if (typeof todays_word === "string"){
+        // dude typescript is so stupid you have to use tic marks ` to display variables in the strings
+        archive_thread.send(`${mm} ${dd} ${yyyy}\nWordle #${todays_number}\n||${todays_word}||`)
+        return
+    }
+    else
+        console.log("Error bad word, or something horrible")
+        return
+        
+    // })
+    // return
+}
+// login once
+let client = login();
+// set a timer for posting for once a day lol
+setInterval(main, 86400000, client);
+// setTimeout(() => {clearInterval(timerId); console.log("stop");}, 10001);
+
 // This is just messing around with a certain message "ping" is found in a channel then replys/reacts
 // client.on("messageCreate", (message) => {
 //     const archive_thread: TextChannel = client.channels.cache.get("944764856672862269") as TextChannel;
@@ -82,6 +100,3 @@ function main(){
 // }
 // )
 // TOKEN name needs to match the variable name you chose in the .env file
-    client.login(process.env.TOKEN)
-}
-main();
