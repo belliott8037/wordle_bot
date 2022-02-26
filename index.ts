@@ -19,16 +19,15 @@ function login(){
     return client
 }
 function main(client: DiscordJS.Client){
-    
     // This is stupid don't judge me
     // Set the arbitrary day is the day that you are starting the bot on
-    let arbitrary_day = 250
+    let arbitrary_day = 252
     // set the arbitrary diff is the difference between your arbitrary_day and the length of your list
-    let arbitrary_diff = 20
+    let arbitrary_diff = 1805
     // I'm sorry there's a better way of doing this but I don't care.
 
     // read in file
-    const words = (fs.readFileSync("./Test wordles.csv", {
+    const words = (fs.readFileSync("./wordle list.csv", {
         encoding: "utf-8"
     }).split(","));
     if (words[0] === ""){
