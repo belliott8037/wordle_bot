@@ -18,12 +18,10 @@ function login(){
     client.login(process.env.TOKEN)
     return client
 }
-function main(client: DiscordJS.Client){
-    // This is stupid don't judge me
-    // Set the arbitrary day is the day that you are starting the bot on
-    let arbitrary_day = 252
+function setup(){
+    let arbitrary_day = 254
     // set the arbitrary diff is the difference between your arbitrary_day and the length of your list
-    let arbitrary_diff = 1805
+    let arbitrary_diff = 1801
     // I'm sorry there's a better way of doing this but I don't care.
 
     // read in file
@@ -34,8 +32,9 @@ function main(client: DiscordJS.Client){
         console.log("Out of words")
         return;
     }
+    // console.log(words.length)
     // Let's grab the word of the day
-    let todays_word = words[0].substring(1,6)
+    let todays_word: string = words[0].substring(1,6)
     // Let's do some stupid math
     if (words.length < arbitrary_day){
         var modifier = words.length + arbitrary_diff
@@ -46,42 +45,60 @@ function main(client: DiscordJS.Client){
     // Get the offset to add
     let offset = arbitrary_day - modifier
     // Calculate the number
-    let todays_number = arbitrary_day + offset
+    let todays_number: number = arbitrary_day + offset
     // delete word from the list
-    words.shift()
+    //words.shift()
     // update the file after stripping out WoD
-    fs.writeFileSync("./Test wordles.csv", words.toString());
+    fs.writeFileSync("./wordle list.csv", words.toString());
     // Grab the date. yeah i got it off stackoverflow, sue me. https://stackoverflow.com/a/4929629
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.toLocaleString('en-us', {month: 'long'})).padStart(2, '0'); // Jan is apparently zero real smart.
-    var yyyy = today.getFullYear()
-
-    // client.on('ready', () => {
-        //                                                             ID token of the thread
-    const archive_thread: ThreadChannel = client.channels.cache.get("947220226561437706") as ThreadChannel;
-    // console.log("The bot is ready")   
-    if(!archive_thread.isThread()){
-        console.log("Channel is not a thread")
-        return
-    }
-    // post WoD
-    else if (typeof todays_word === "string"){
-        // dude typescript is so stupid you have to use tic marks ` to display variables in the strings
-        archive_thread.send(`${mm} ${dd} ${yyyy}\nWordle #${todays_number}\n||${todays_word}||`)
-        return
-    }
-    else
-        console.log("Error bad word, or something horrible")
-        return
-        
-    // })
-    // return
+    var yyyy = String(today.getFullYear())
+    let dmy: string[] = [dd,mm,yyyy]
+    return {
+        "todays_number": todays_number as number,
+        "todays_word": todays_word as string,
+        "dmy": dmy as string[]
+    };
 }
-// login once
+// TODO: Try and make a promise for this function to then callback a kill function for the bot.
+function main(client: DiscordJS.Client){
+    let message = setup()
+    client.on('ready', () => {
+        // This is stupid don't judge me
+        // Set the arbitrary day is the day that you are starting the bot on
+        //                                                              ID token of the thread
+        const archive_thread: ThreadChannel = client.channels.cache.get("947959106029912065") as ThreadChannel;
+        if(archive_thread === undefined)
+        {
+            console.log("breaking")
+            return
+        }
+        // post WoD
+        else if (typeof message?.todays_word === "string"){
+        // dude typescript is so stupid you have to use tic marks ` to display variables in the strings
+            archive_thread.send(`${message?.dmy[1]} ${message?.dmy[0]} ${message?.dmy[2]}\nWordle #${message?.todays_number}\n||${message?.todays_word}||`)
+            .then(message => console.log(`Sent message: ${message.content}`))
+            .catch(console.error)
+        }
+        else
+            console.log("Error bad word, or something horrible")
+            return
+        })
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve('ye boi');
+            },2000)
+        })
+}
 let client = login();
-// set a timer for posting for once a day lol
-setInterval(main, 86400000, client);
+async function logout(){
+    await main(client);
+    process.exit()
+}
+logout();
+
 // setTimeout(() => {clearInterval(timerId); console.log("stop");}, 10001);
 
 // This is just messing around with a certain message "ping" is found in a channel then replys/reacts
