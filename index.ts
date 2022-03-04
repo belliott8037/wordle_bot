@@ -79,8 +79,8 @@ function main(client: DiscordJS.Client){
         else if (typeof message?.todays_word === "string"){
         // dude typescript is so stupid you have to use tic marks ` to display variables in the strings
             archive_thread.send(`${message?.dmy[1]} ${message?.dmy[0]} ${message?.dmy[2]}\nWordle #${message?.todays_number}\n||${message?.todays_word}||`)
-            .then(message => console.log(`Sent message: ${message.content}`))
-            .catch(console.error)
+            // .then(message => console.log(`Sent message: ${message.content}`))
+            // .catch(console.error)
         }
         else
             console.log("Error bad word, or something horrible")
