@@ -24,7 +24,7 @@ function setup(){
     let arbitrary_diff = 1801
     // I'm sorry there's a better way of doing this but I don't care.
 
-    // read in file
+    // read in file, don't use relative pathing when using a cronjob.
     const words = (fs.readFileSync("./wordle list.csv", {
         encoding: "utf-8"
     }).split(","));
@@ -48,7 +48,7 @@ function setup(){
     let todays_number: number = arbitrary_day + offset
     // delete word from the list
     //words.shift()
-    // update the file after stripping out WoD
+    // update the file after stripping out WoD, don't use relative pathing when using a cronjob
     fs.writeFileSync("./wordle list.csv", words.toString());
     // Grab the date. yeah i got it off stackoverflow, sue me. https://stackoverflow.com/a/4929629
     var today = new Date();
